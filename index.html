@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumo MCP</title>
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/images/sumo-mcp-512.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="assets/images/sumo-mcp-512.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Noto+Serif+JP:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #F5F1E8;
+            --ink: #2D2D2D;
+            --soft-red: #D4A5A5;
+            --matcha: #A8B5A0;
+            --sand: #E5DCC5;
+            --charcoal: #4A4A4A;
+            --muted-clay: #C9A689;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.8;
+        }
+
+        /* Japanese paper texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.02) 2px, rgba(0,0,0,.02) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,.02) 2px, rgba(0,0,0,.02) 4px);
+            pointer-events: none;
+            opacity: 0.4;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--matcha) 0%, transparent 70%);
+            opacity: 0.15;
+            border-radius: 50%;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 15%;
+            left: 8%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--soft-red) 0%, transparent 70%);
+            opacity: 0.12;
+            border-radius: 50%;
+        }
+
+        h1 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            color: var(--ink);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            animation: fadeIn 1s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: var(--charcoal);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-weight: 300;
+            line-height: 1.9;
+            animation: fadeIn 1s ease-out 0.4s both;
+        }
+
+        .subtitle a {
+            color: var(--muted-clay);
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .subtitle a:hover {
+            color: var(--ink);
+        }
+
+        /* Decorative line */
+        .divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--muted-clay), transparent);
+            margin: 2rem auto;
+        }
+
+        /* Sections */
+        section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            color: var(--ink);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        /* Connection Methods */
+        .methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .method {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 2px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+            border-top: 3px solid var(--sand);
+        }
+
+        .method:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            border-top-color: var(--matcha);
+        }
+
+        .method-number {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 0.85rem;
+            color: var(--muted-clay);
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .method h3 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.8rem;
+            color: var(--ink);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .method p {
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .method a {
+            color: var(--muted-clay);
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .method a:hover {
+            color: var(--ink);
+        }
+
+        .code {
+            background: var(--sand);
+            padding: 1.2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--ink);
+            border-left: 3px solid var(--matcha);
+            overflow-x: auto;
+            border-radius: 2px;
+        }
+
+        /* Features */
+        .features {
+            background: linear-gradient(to bottom, transparent, var(--sand));
+            padding: 4rem 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover .feature-icon {
+            transform: scale(1.1);
+        }
+
+        .feature h3 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.5rem;
+            color: var(--ink);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .feature p {
+            color: var(--charcoal);
+            line-height: 1.8;
+        }
+
+        /* Call to Action */
+        .cta {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3.5rem;
+            background: var(--ink);
+            color: var(--paper);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            border: 2px solid var(--ink);
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            color: var(--ink);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            background: var(--sand);
+        }
+
+        footer p {
+            color: var(--charcoal);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            section {
+                padding: 3rem 1.5rem;
+            }
+
+            .methods {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Cherry blossom decoration */
+        .blossom {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            opacity: 0.3;
+        }
+
+        .blossom::before,
+        .blossom::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--soft-red);
+            border-radius: 50% 0 50% 50%;
+        }
+
+        .blossom::before {
+            transform: rotate(45deg);
+        }
+
+        .blossom::after {
+            transform: rotate(-45deg);
+        }
+
+        .blossom-1 {
+            top: 20%;
+            left: 10%;
+            animation: float-blossom 20s ease-in-out infinite;
+        }
+
+        .blossom-2 {
+            top: 60%;
+            right: 15%;
+            animation: float-blossom 25s ease-in-out infinite 5s;
+        }
+
+        .blossom-3 {
+            top: 40%;
+            left: 85%;
+            animation: float-blossom 30s ease-in-out infinite 10s;
+        }
+
+        .blossom-4 {
+            top: 15%;
+            right: 25%;
+            animation: float-blossom 22s ease-in-out infinite 3s;
+        }
+
+        .blossom-5 {
+            top: 70%;
+            left: 20%;
+            animation: float-blossom 28s ease-in-out infinite 7s;
+        }
+
+        .blossom-6 {
+            top: 50%;
+            right: 8%;
+            animation: float-blossom 26s ease-in-out infinite 12s;
+        }
+
+        .blossom-7 {
+            top: 85%;
+            left: 15%;
+            animation: float-blossom 24s ease-in-out infinite 4s;
+        }
+
+        .blossom-8 {
+            top: 30%;
+            left: 5%;
+            animation: float-blossom 27s ease-in-out infinite 15s;
+        }
+
+        .blossom-9 {
+            top: 65%;
+            right: 30%;
+            animation: float-blossom 29s ease-in-out infinite 8s;
+        }
+
+        .blossom-10 {
+            top: 10%;
+            left: 70%;
+            animation: float-blossom 23s ease-in-out infinite 2s;
+        }
+
+        .blossom-11 {
+            top: 25%;
+            right: 40%;
+            animation: float-blossom 21s ease-in-out infinite 6s;
+        }
+
+        .blossom-12 {
+            top: 55%;
+            left: 50%;
+            animation: float-blossom 25s ease-in-out infinite 9s;
+        }
+
+        .blossom-13 {
+            top: 35%;
+            right: 20%;
+            animation: float-blossom 27s ease-in-out infinite 11s;
+        }
+
+        .blossom-14 {
+            top: 80%;
+            left: 60%;
+            animation: float-blossom 24s ease-in-out infinite 5s;
+        }
+
+        .blossom-15 {
+            top: 45%;
+            left: 35%;
+            animation: float-blossom 26s ease-in-out infinite 13s;
+        }
+
+        .blossom-16 {
+            top: 90%;
+            right: 10%;
+            animation: float-blossom 22s ease-in-out infinite 7s;
+        }
+
+        .blossom-17 {
+            top: 5%;
+            left: 40%;
+            animation: float-blossom 28s ease-in-out infinite 14s;
+        }
+
+        .blossom-18 {
+            top: 75%;
+            right: 45%;
+            animation: float-blossom 23s ease-in-out infinite 3s;
+        }
+
+        .blossom-19 {
+            top: 48%;
+            left: 78%;
+            animation: float-blossom 29s ease-in-out infinite 16s;
+        }
+
+        .blossom-20 {
+            top: 92%;
+            left: 35%;
+            animation: float-blossom 24s ease-in-out infinite 8s;
+        }
+
+        .blossom-21 {
+            top: 18%;
+            right: 55%;
+            animation: float-blossom 26s ease-in-out infinite 10s;
+        }
+
+        .blossom-22 {
+            top: 62%;
+            left: 8%;
+            animation: float-blossom 25s ease-in-out infinite 12s;
+        }
+
+        .blossom-23 {
+            top: 38%;
+            right: 65%;
+            animation: float-blossom 27s ease-in-out infinite 4s;
+        }
+
+        .blossom-24 {
+            top: 88%;
+            left: 82%;
+            animation: float-blossom 23s ease-in-out infinite 15s;
+        }
+
+        .blossom-25 {
+            top: 12%;
+            left: 25%;
+            animation: float-blossom 28s ease-in-out infinite 6s;
+        }
+
+        .blossom-26 {
+            top: 58%;
+            right: 12%;
+            animation: float-blossom 24s ease-in-out infinite 9s;
+        }
+
+        .blossom-27 {
+            top: 28%;
+            left: 62%;
+            animation: float-blossom 26s ease-in-out infinite 11s;
+        }
+
+        .blossom-28 {
+            top: 72%;
+            right: 35%;
+            animation: float-blossom 22s ease-in-out infinite 13s;
+        }
+
+        .blossom-29 {
+            top: 42%;
+            left: 12%;
+            animation: float-blossom 27s ease-in-out infinite 7s;
+        }
+
+        .blossom-30 {
+            top: 95%;
+            right: 70%;
+            animation: float-blossom 25s ease-in-out infinite 14s;
+        }
+
+        .blossom-31 { top: 8%; left: 15%; animation: float-blossom 21s ease-in-out infinite 1s; }
+        .blossom-32 { top: 22%; right: 8%; animation: float-blossom 26s ease-in-out infinite 5s; }
+        .blossom-33 { top: 67%; left: 45%; animation: float-blossom 23s ease-in-out infinite 9s; }
+        .blossom-34 { top: 14%; right: 32%; animation: float-blossom 28s ease-in-out infinite 12s; }
+        .blossom-35 { top: 51%; left: 18%; animation: float-blossom 24s ease-in-out infinite 3s; }
+        .blossom-36 { top: 84%; right: 52%; animation: float-blossom 27s ease-in-out infinite 15s; }
+        .blossom-37 { top: 33%; left: 72%; animation: float-blossom 22s ease-in-out infinite 7s; }
+        .blossom-38 { top: 76%; right: 18%; animation: float-blossom 25s ease-in-out infinite 11s; }
+        .blossom-39 { top: 19%; left: 58%; animation: float-blossom 29s ease-in-out infinite 4s; }
+        .blossom-40 { top: 61%; right: 42%; animation: float-blossom 23s ease-in-out infinite 13s; }
+        .blossom-41 { top: 7%; left: 82%; animation: float-blossom 26s ease-in-out infinite 6s; }
+        .blossom-42 { top: 44%; right: 15%; animation: float-blossom 24s ease-in-out infinite 10s; }
+        .blossom-43 { top: 89%; left: 28%; animation: float-blossom 27s ease-in-out infinite 2s; }
+        .blossom-44 { top: 16%; right: 68%; animation: float-blossom 22s ease-in-out infinite 14s; }
+        .blossom-45 { top: 54%; left: 5%; animation: float-blossom 28s ease-in-out infinite 8s; }
+        .blossom-46 { top: 31%; right: 28%; animation: float-blossom 25s ease-in-out infinite 12s; }
+        .blossom-47 { top: 73%; left: 68%; animation: float-blossom 23s ease-in-out infinite 5s; }
+        .blossom-48 { top: 11%; right: 48%; animation: float-blossom 26s ease-in-out infinite 9s; }
+        .blossom-49 { top: 47%; left: 92%; animation: float-blossom 24s ease-in-out infinite 13s; }
+        .blossom-50 { top: 86%; right: 62%; animation: float-blossom 27s ease-in-out infinite 3s; }
+        .blossom-51 { top: 24%; left: 38%; animation: float-blossom 22s ease-in-out infinite 11s; }
+        .blossom-52 { top: 69%; right: 5%; animation: float-blossom 28s ease-in-out infinite 6s; }
+        .blossom-53 { top: 13%; left: 52%; animation: float-blossom 25s ease-in-out infinite 14s; }
+        .blossom-54 { top: 57%; right: 78%; animation: float-blossom 23s ease-in-out infinite 7s; }
+        .blossom-55 { top: 37%; left: 22%; animation: float-blossom 26s ease-in-out infinite 10s; }
+        .blossom-56 { top: 79%; right: 38%; animation: float-blossom 24s ease-in-out infinite 4s; }
+        .blossom-57 { top: 9%; left: 65%; animation: float-blossom 27s ease-in-out infinite 12s; }
+        .blossom-58 { top: 52%; right: 22%; animation: float-blossom 22s ease-in-out infinite 8s; }
+        .blossom-59 { top: 91%; left: 48%; animation: float-blossom 28s ease-in-out infinite 2s; }
+        .blossom-60 { top: 26%; right: 58%; animation: float-blossom 25s ease-in-out infinite 15s; }
+        .blossom-61 { top: 64%; left: 12%; animation: float-blossom 23s ease-in-out infinite 9s; }
+        .blossom-62 { top: 17%; right: 72%; animation: float-blossom 26s ease-in-out infinite 5s; }
+        .blossom-63 { top: 49%; left: 75%; animation: float-blossom 24s ease-in-out infinite 11s; }
+        .blossom-64 { top: 83%; right: 15%; animation: float-blossom 27s ease-in-out infinite 3s; }
+        .blossom-65 { top: 21%; left: 32%; animation: float-blossom 22s ease-in-out infinite 13s; }
+        .blossom-66 { top: 71%; right: 48%; animation: float-blossom 28s ease-in-out infinite 7s; }
+        .blossom-67 { top: 6%; left: 88%; animation: float-blossom 25s ease-in-out infinite 14s; }
+        .blossom-68 { top: 43%; right: 8%; animation: float-blossom 23s ease-in-out infinite 6s; }
+        .blossom-69 { top: 87%; left: 58%; animation: float-blossom 26s ease-in-out infinite 10s; }
+        .blossom-70 { top: 29%; right: 82%; animation: float-blossom 24s ease-in-out infinite 4s; }
+        .blossom-71 { top: 66%; left: 25%; animation: float-blossom 27s ease-in-out infinite 12s; }
+        .blossom-72 { top: 15%; right: 42%; animation: float-blossom 22s ease-in-out infinite 8s; }
+        .blossom-73 { top: 53%; left: 68%; animation: float-blossom 28s ease-in-out infinite 2s; }
+        .blossom-74 { top: 93%; right: 25%; animation: float-blossom 25s ease-in-out infinite 15s; }
+        .blossom-75 { top: 36%; left: 48%; animation: float-blossom 23s ease-in-out infinite 9s; }
+        .blossom-76 { top: 78%; right: 65%; animation: float-blossom 26s ease-in-out infinite 5s; }
+        .blossom-77 { top: 4%; left: 42%; animation: float-blossom 24s ease-in-out infinite 11s; }
+        .blossom-78 { top: 46%; right: 32%; animation: float-blossom 27s ease-in-out infinite 3s; }
+        .blossom-79 { top: 82%; left: 72%; animation: float-blossom 22s ease-in-out infinite 13s; }
+        .blossom-80 { top: 27%; right: 52%; animation: float-blossom 28s ease-in-out infinite 7s; }
+        .blossom-81 { top: 68%; left: 8%; animation: float-blossom 25s ease-in-out infinite 14s; }
+        .blossom-82 { top: 11%; right: 18%; animation: float-blossom 23s ease-in-out infinite 6s; }
+        .blossom-83 { top: 56%; left: 82%; animation: float-blossom 26s ease-in-out infinite 10s; }
+        .blossom-84 { top: 94%; right: 38%; animation: float-blossom 24s ease-in-out infinite 4s; }
+        .blossom-85 { top: 23%; left: 15%; animation: float-blossom 27s ease-in-out infinite 12s; }
+        .blossom-86 { top: 63%; right: 72%; animation: float-blossom 22s ease-in-out infinite 8s; }
+        .blossom-87 { top: 3%; left: 58%; animation: float-blossom 28s ease-in-out infinite 2s; }
+        .blossom-88 { top: 41%; right: 12%; animation: float-blossom 25s ease-in-out infinite 15s; }
+        .blossom-89 { top: 81%; left: 38%; animation: float-blossom 23s ease-in-out infinite 9s; }
+        .blossom-90 { top: 20%; right: 62%; animation: float-blossom 26s ease-in-out infinite 5s; }
+        .blossom-91 { top: 59%; left: 52%; animation: float-blossom 24s ease-in-out infinite 11s; }
+        .blossom-92 { top: 97%; right: 48%; animation: float-blossom 27s ease-in-out infinite 3s; }
+        .blossom-93 { top: 34%; left: 28%; animation: float-blossom 22s ease-in-out infinite 13s; }
+        .blossom-94 { top: 74%; right: 8%; animation: float-blossom 28s ease-in-out infinite 7s; }
+        .blossom-95 { top: 12%; left: 78%; animation: float-blossom 25s ease-in-out infinite 14s; }
+        .blossom-96 { top: 50%; right: 28%; animation: float-blossom 23s ease-in-out infinite 6s; }
+        .blossom-97 { top: 85%; left: 62%; animation: float-blossom 26s ease-in-out infinite 10s; }
+        .blossom-98 { top: 30%; right: 75%; animation: float-blossom 24s ease-in-out infinite 4s; }
+        .blossom-99 { top: 70%; left: 42%; animation: float-blossom 27s ease-in-out infinite 12s; }
+        .blossom-100 { top: 8%; right: 88%; animation: float-blossom 22s ease-in-out infinite 8s; }
+
+        @keyframes float-blossom {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-15px) translateX(10px) rotate(90deg);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateY(-30px) translateX(-5px) rotate(180deg);
+                opacity: 0.3;
+            }
+            75% {
+                transform: translateY(-15px) translateX(-12px) rotate(270deg);
+                opacity: 0.35;
+            }
+            100% {
+                transform: translateY(0) translateX(0) rotate(360deg);
+                opacity: 0.3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cherry blossom decorations -->
+        <div class="blossom blossom-1"></div>
+        <div class="blossom blossom-2"></div>
+        <div class="blossom blossom-3"></div>
+        <div class="blossom blossom-4"></div>
+        <div class="blossom blossom-5"></div>
+        <div class="blossom blossom-6"></div>
+        <div class="blossom blossom-7"></div>
+        <div class="blossom blossom-8"></div>
+        <div class="blossom blossom-9"></div>
+        <div class="blossom blossom-10"></div>
+        <div class="blossom blossom-11"></div>
+        <div class="blossom blossom-12"></div>
+        <div class="blossom blossom-13"></div>
+        <div class="blossom blossom-14"></div>
+        <div class="blossom blossom-15"></div>
+        <div class="blossom blossom-16"></div>
+        <div class="blossom blossom-17"></div>
+        <div class="blossom blossom-18"></div>
+        <div class="blossom blossom-19"></div>
+        <div class="blossom blossom-20"></div>
+        <div class="blossom blossom-21"></div>
+        <div class="blossom blossom-22"></div>
+        <div class="blossom blossom-23"></div>
+        <div class="blossom blossom-24"></div>
+        <div class="blossom blossom-25"></div>
+        <div class="blossom blossom-26"></div>
+        <div class="blossom blossom-27"></div>
+        <div class="blossom blossom-28"></div>
+        <div class="blossom blossom-29"></div>
+        <div class="blossom blossom-30"></div>
+        <div class="blossom blossom-31"></div>
+        <div class="blossom blossom-32"></div>
+        <div class="blossom blossom-33"></div>
+        <div class="blossom blossom-34"></div>
+        <div class="blossom blossom-35"></div>
+        <div class="blossom blossom-36"></div>
+        <div class="blossom blossom-37"></div>
+        <div class="blossom blossom-38"></div>
+        <div class="blossom blossom-39"></div>
+        <div class="blossom blossom-40"></div>
+        <div class="blossom blossom-41"></div>
+        <div class="blossom blossom-42"></div>
+        <div class="blossom blossom-43"></div>
+        <div class="blossom blossom-44"></div>
+        <div class="blossom blossom-45"></div>
+        <div class="blossom blossom-46"></div>
+        <div class="blossom blossom-47"></div>
+        <div class="blossom blossom-48"></div>
+        <div class="blossom blossom-49"></div>
+        <div class="blossom blossom-50"></div>
+        <div class="blossom blossom-51"></div>
+        <div class="blossom blossom-52"></div>
+        <div class="blossom blossom-53"></div>
+        <div class="blossom blossom-54"></div>
+        <div class="blossom blossom-55"></div>
+        <div class="blossom blossom-56"></div>
+        <div class="blossom blossom-57"></div>
+        <div class="blossom blossom-58"></div>
+        <div class="blossom blossom-59"></div>
+        <div class="blossom blossom-60"></div>
+        <div class="blossom blossom-61"></div>
+        <div class="blossom blossom-62"></div>
+        <div class="blossom blossom-63"></div>
+        <div class="blossom blossom-64"></div>
+        <div class="blossom blossom-65"></div>
+        <div class="blossom blossom-66"></div>
+        <div class="blossom blossom-67"></div>
+        <div class="blossom blossom-68"></div>
+        <div class="blossom blossom-69"></div>
+        <div class="blossom blossom-70"></div>
+        <div class="blossom blossom-71"></div>
+        <div class="blossom blossom-72"></div>
+        <div class="blossom blossom-73"></div>
+        <div class="blossom blossom-74"></div>
+        <div class="blossom blossom-75"></div>
+        <div class="blossom blossom-76"></div>
+        <div class="blossom blossom-77"></div>
+        <div class="blossom blossom-78"></div>
+        <div class="blossom blossom-79"></div>
+        <div class="blossom blossom-80"></div>
+        <div class="blossom blossom-81"></div>
+        <div class="blossom blossom-82"></div>
+        <div class="blossom blossom-83"></div>
+        <div class="blossom blossom-84"></div>
+        <div class="blossom blossom-85"></div>
+        <div class="blossom blossom-86"></div>
+        <div class="blossom blossom-87"></div>
+        <div class="blossom blossom-88"></div>
+        <div class="blossom blossom-89"></div>
+        <div class="blossom blossom-90"></div>
+        <div class="blossom blossom-91"></div>
+        <div class="blossom blossom-92"></div>
+        <div class="blossom blossom-93"></div>
+        <div class="blossom blossom-94"></div>
+        <div class="blossom blossom-95"></div>
+        <div class="blossom blossom-96"></div>
+        <div class="blossom blossom-97"></div>
+        <div class="blossom blossom-98"></div>
+        <div class="blossom blossom-99"></div>
+        <div class="blossom blossom-100"></div>
+
+        <!-- Hero -->
+        <section class="hero">
+            <h1>Sumo MCP</h1>
+            <p class="subtitle">
+                An MCP server powered by historical and live data from <a href="https://sumo-api.com" target="_blank" rel="noopener noreferrer">sumo-api.com</a>. 
+                This server helps AI chatbots like Claude and ChatGPT answer complex questions about sumo wrestling by providing access to comprehensive match data, wrestler statistics, tournament results, and rich historical records.
+            </p>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- How to Connect -->
+        <section class="fade-up">
+            <h2 class="section-title">Easy to Use</h2>
+            <p class="section-subtitle">Choose your preferred way to begin</p>
+            
+            <div class="methods">
+                <div class="method">
+                    <div class="method-number">一 • FIRST WAY</div>
+                    <h3>Through the Web</h3>
+                    <p>
+                        Connect instantly using our hosted endpoint through the "Connector" feature available in AI chat interfaces like Claude and ChatGPT. 
+                        Simply add this URL to your Connector settings—no installation or configuration required. The Connector feature allows these AI assistants to directly query the sumo database in real-time, enabling them to answer detailed questions about wrestlers, matches, tournaments, and historical records with accurate, up-to-date information.
+                    </p>
+                    <div class="code">https://api.sumo-mcp.com/mcp</div>
+                </div>
+
+                <div class="method">
+                    <div class="method-number">二 • SECOND WAY</div>
+                    <h3>Through Go</h3>
+                    <p>
+                        Install the <a href="https://go.dev/doc/install" target="_blank" rel="noopener noreferrer">Go toolchain</a> on your system, then use this command as an stdio-based MCP server for desktop applications like Claude Desktop.
+                    </p>
+                    <div class="code">go run github.com/sumo-mcp/sumo-mcp/cmd@latest</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="features fade-up">
+            <h2 class="section-title">Made with Care</h2>
+            <p class="section-subtitle">Built to share the beauty of sumo</p>
+            
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">🌸</div>
+                    <h3>Free Forever</h3>
+                    <p>
+                        No costs or limits. Our purpose is to spread the joy 
+                        and appreciation of sumo to all who seek it.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Trustworthy</h3>
+                    <p>
+                        Built with care and attention to your safety. 
+                        Your connection remains secure and private.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Open & Welcoming</h3>
+                    <p>
+                        Developed openly on GitHub. All contributions, 
+                        suggestions, and improvements are welcomed warmly.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta fade-up">
+            <a href="https://github.com/sumo-mcp/sumo-mcp" target="_blank" rel="noopener noreferrer" class="cta-button">
+                Visit on GitHub
+            </a>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Sumo MCP • Sharing the tradition of 相撲 with the world</p>
+        </footer>
+    </div>
+
+    <script>
+        // Scroll reveal
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

@@ -348,6 +348,7 @@
         /* Cherry blossom decoration */
         .blossom {
             position: absolute;
+            pointer-events: none;
             width: 30px;
             height: 30px;
             opacity: 0.3;
@@ -371,277 +372,50 @@
             transform: rotate(-45deg);
         }
 
-        .blossom-1 {
-            top: 20%;
-            left: 10%;
-            animation: float-blossom 20s ease-in-out infinite;
+        /* Three petal shapes (b1 = default above). One is assigned at random per
+           petal in JS so the field of blossoms isn't visually uniform. */
+        .blossom.b2::before,
+        .blossom.b2::after {
+            width: 15px;
+            height: 15px;
+            background: #E3B7C0;
+            border-radius: 50% 50% 50% 0;
         }
+        .blossom.b2::before { transform: rotate(30deg); }
+        .blossom.b2::after  { transform: rotate(-30deg); }
 
-        .blossom-2 {
-            top: 60%;
-            right: 15%;
-            animation: float-blossom 25s ease-in-out infinite 5s;
+        .blossom.b3::before,
+        .blossom.b3::after {
+            width: 9px;
+            height: 9px;
+            background: #C98B9B;
+            border-radius: 60% 40% 60% 40%;
         }
+        .blossom.b3::before { transform: rotate(10deg); }
+        .blossom.b3::after  { transform: rotate(-10deg); }
 
-        .blossom-3 {
-            top: 40%;
-            left: 85%;
-            animation: float-blossom 30s ease-in-out infinite 10s;
-        }
-
-        .blossom-4 {
-            top: 15%;
-            right: 25%;
-            animation: float-blossom 22s ease-in-out infinite 3s;
-        }
-
-        .blossom-5 {
-            top: 70%;
-            left: 20%;
-            animation: float-blossom 28s ease-in-out infinite 7s;
-        }
-
-        .blossom-6 {
-            top: 50%;
-            right: 8%;
-            animation: float-blossom 26s ease-in-out infinite 12s;
-        }
-
-        .blossom-7 {
-            top: 85%;
-            left: 15%;
-            animation: float-blossom 24s ease-in-out infinite 4s;
-        }
-
-        .blossom-8 {
-            top: 30%;
-            left: 5%;
-            animation: float-blossom 27s ease-in-out infinite 15s;
-        }
-
-        .blossom-9 {
-            top: 65%;
-            right: 30%;
-            animation: float-blossom 29s ease-in-out infinite 8s;
-        }
-
-        .blossom-10 {
-            top: 10%;
-            left: 70%;
-            animation: float-blossom 23s ease-in-out infinite 2s;
-        }
-
-        .blossom-11 {
-            top: 25%;
-            right: 40%;
-            animation: float-blossom 21s ease-in-out infinite 6s;
-        }
-
-        .blossom-12 {
-            top: 55%;
-            left: 50%;
-            animation: float-blossom 25s ease-in-out infinite 9s;
-        }
-
-        .blossom-13 {
-            top: 35%;
-            right: 20%;
-            animation: float-blossom 27s ease-in-out infinite 11s;
-        }
-
-        .blossom-14 {
-            top: 80%;
-            left: 60%;
-            animation: float-blossom 24s ease-in-out infinite 5s;
-        }
-
-        .blossom-15 {
-            top: 45%;
-            left: 35%;
-            animation: float-blossom 26s ease-in-out infinite 13s;
-        }
-
-        .blossom-16 {
-            top: 90%;
-            right: 10%;
-            animation: float-blossom 22s ease-in-out infinite 7s;
-        }
-
-        .blossom-17 {
-            top: 5%;
-            left: 40%;
-            animation: float-blossom 28s ease-in-out infinite 14s;
-        }
-
-        .blossom-18 {
-            top: 75%;
-            right: 45%;
-            animation: float-blossom 23s ease-in-out infinite 3s;
-        }
-
-        .blossom-19 {
-            top: 48%;
-            left: 78%;
-            animation: float-blossom 29s ease-in-out infinite 16s;
-        }
-
-        .blossom-20 {
-            top: 92%;
-            left: 35%;
-            animation: float-blossom 24s ease-in-out infinite 8s;
-        }
-
-        .blossom-21 {
-            top: 18%;
-            right: 55%;
-            animation: float-blossom 26s ease-in-out infinite 10s;
-        }
-
-        .blossom-22 {
-            top: 62%;
-            left: 8%;
-            animation: float-blossom 25s ease-in-out infinite 12s;
-        }
-
-        .blossom-23 {
-            top: 38%;
-            right: 65%;
-            animation: float-blossom 27s ease-in-out infinite 4s;
-        }
-
-        .blossom-24 {
-            top: 88%;
-            left: 82%;
-            animation: float-blossom 23s ease-in-out infinite 15s;
-        }
-
-        .blossom-25 {
-            top: 12%;
-            left: 25%;
-            animation: float-blossom 28s ease-in-out infinite 6s;
-        }
-
-        .blossom-26 {
-            top: 58%;
-            right: 12%;
-            animation: float-blossom 24s ease-in-out infinite 9s;
-        }
-
-        .blossom-27 {
-            top: 28%;
-            left: 62%;
-            animation: float-blossom 26s ease-in-out infinite 11s;
-        }
-
-        .blossom-28 {
-            top: 72%;
-            right: 35%;
-            animation: float-blossom 22s ease-in-out infinite 13s;
-        }
-
-        .blossom-29 {
-            top: 42%;
-            left: 12%;
-            animation: float-blossom 27s ease-in-out infinite 7s;
-        }
-
-        .blossom-30 {
-            top: 95%;
-            right: 70%;
-            animation: float-blossom 25s ease-in-out infinite 14s;
-        }
-
-        .blossom-31 { top: 8%; left: 15%; animation: float-blossom 21s ease-in-out infinite 1s; }
-        .blossom-32 { top: 22%; right: 8%; animation: float-blossom 26s ease-in-out infinite 5s; }
-        .blossom-33 { top: 67%; left: 45%; animation: float-blossom 23s ease-in-out infinite 9s; }
-        .blossom-34 { top: 14%; right: 32%; animation: float-blossom 28s ease-in-out infinite 12s; }
-        .blossom-35 { top: 51%; left: 18%; animation: float-blossom 24s ease-in-out infinite 3s; }
-        .blossom-36 { top: 84%; right: 52%; animation: float-blossom 27s ease-in-out infinite 15s; }
-        .blossom-37 { top: 33%; left: 72%; animation: float-blossom 22s ease-in-out infinite 7s; }
-        .blossom-38 { top: 76%; right: 18%; animation: float-blossom 25s ease-in-out infinite 11s; }
-        .blossom-39 { top: 19%; left: 58%; animation: float-blossom 29s ease-in-out infinite 4s; }
-        .blossom-40 { top: 61%; right: 42%; animation: float-blossom 23s ease-in-out infinite 13s; }
-        .blossom-41 { top: 7%; left: 82%; animation: float-blossom 26s ease-in-out infinite 6s; }
-        .blossom-42 { top: 44%; right: 15%; animation: float-blossom 24s ease-in-out infinite 10s; }
-        .blossom-43 { top: 89%; left: 28%; animation: float-blossom 27s ease-in-out infinite 2s; }
-        .blossom-44 { top: 16%; right: 68%; animation: float-blossom 22s ease-in-out infinite 14s; }
-        .blossom-45 { top: 54%; left: 5%; animation: float-blossom 28s ease-in-out infinite 8s; }
-        .blossom-46 { top: 31%; right: 28%; animation: float-blossom 25s ease-in-out infinite 12s; }
-        .blossom-47 { top: 73%; left: 68%; animation: float-blossom 23s ease-in-out infinite 5s; }
-        .blossom-48 { top: 11%; right: 48%; animation: float-blossom 26s ease-in-out infinite 9s; }
-        .blossom-49 { top: 47%; left: 92%; animation: float-blossom 24s ease-in-out infinite 13s; }
-        .blossom-50 { top: 86%; right: 62%; animation: float-blossom 27s ease-in-out infinite 3s; }
-        .blossom-51 { top: 24%; left: 38%; animation: float-blossom 22s ease-in-out infinite 11s; }
-        .blossom-52 { top: 69%; right: 5%; animation: float-blossom 28s ease-in-out infinite 6s; }
-        .blossom-53 { top: 13%; left: 52%; animation: float-blossom 25s ease-in-out infinite 14s; }
-        .blossom-54 { top: 57%; right: 78%; animation: float-blossom 23s ease-in-out infinite 7s; }
-        .blossom-55 { top: 37%; left: 22%; animation: float-blossom 26s ease-in-out infinite 10s; }
-        .blossom-56 { top: 79%; right: 38%; animation: float-blossom 24s ease-in-out infinite 4s; }
-        .blossom-57 { top: 9%; left: 65%; animation: float-blossom 27s ease-in-out infinite 12s; }
-        .blossom-58 { top: 52%; right: 22%; animation: float-blossom 22s ease-in-out infinite 8s; }
-        .blossom-59 { top: 91%; left: 48%; animation: float-blossom 28s ease-in-out infinite 2s; }
-        .blossom-60 { top: 26%; right: 58%; animation: float-blossom 25s ease-in-out infinite 15s; }
-        .blossom-61 { top: 64%; left: 12%; animation: float-blossom 23s ease-in-out infinite 9s; }
-        .blossom-62 { top: 17%; right: 72%; animation: float-blossom 26s ease-in-out infinite 5s; }
-        .blossom-63 { top: 49%; left: 75%; animation: float-blossom 24s ease-in-out infinite 11s; }
-        .blossom-64 { top: 83%; right: 15%; animation: float-blossom 27s ease-in-out infinite 3s; }
-        .blossom-65 { top: 21%; left: 32%; animation: float-blossom 22s ease-in-out infinite 13s; }
-        .blossom-66 { top: 71%; right: 48%; animation: float-blossom 28s ease-in-out infinite 7s; }
-        .blossom-67 { top: 6%; left: 88%; animation: float-blossom 25s ease-in-out infinite 14s; }
-        .blossom-68 { top: 43%; right: 8%; animation: float-blossom 23s ease-in-out infinite 6s; }
-        .blossom-69 { top: 87%; left: 58%; animation: float-blossom 26s ease-in-out infinite 10s; }
-        .blossom-70 { top: 29%; right: 82%; animation: float-blossom 24s ease-in-out infinite 4s; }
-        .blossom-71 { top: 66%; left: 25%; animation: float-blossom 27s ease-in-out infinite 12s; }
-        .blossom-72 { top: 15%; right: 42%; animation: float-blossom 22s ease-in-out infinite 8s; }
-        .blossom-73 { top: 53%; left: 68%; animation: float-blossom 28s ease-in-out infinite 2s; }
-        .blossom-74 { top: 93%; right: 25%; animation: float-blossom 25s ease-in-out infinite 15s; }
-        .blossom-75 { top: 36%; left: 48%; animation: float-blossom 23s ease-in-out infinite 9s; }
-        .blossom-76 { top: 78%; right: 65%; animation: float-blossom 26s ease-in-out infinite 5s; }
-        .blossom-77 { top: 4%; left: 42%; animation: float-blossom 24s ease-in-out infinite 11s; }
-        .blossom-78 { top: 46%; right: 32%; animation: float-blossom 27s ease-in-out infinite 3s; }
-        .blossom-79 { top: 82%; left: 72%; animation: float-blossom 22s ease-in-out infinite 13s; }
-        .blossom-80 { top: 27%; right: 52%; animation: float-blossom 28s ease-in-out infinite 7s; }
-        .blossom-81 { top: 68%; left: 8%; animation: float-blossom 25s ease-in-out infinite 14s; }
-        .blossom-82 { top: 11%; right: 18%; animation: float-blossom 23s ease-in-out infinite 6s; }
-        .blossom-83 { top: 56%; left: 82%; animation: float-blossom 26s ease-in-out infinite 10s; }
-        .blossom-84 { top: 94%; right: 38%; animation: float-blossom 24s ease-in-out infinite 4s; }
-        .blossom-85 { top: 23%; left: 15%; animation: float-blossom 27s ease-in-out infinite 12s; }
-        .blossom-86 { top: 63%; right: 72%; animation: float-blossom 22s ease-in-out infinite 8s; }
-        .blossom-87 { top: 3%; left: 58%; animation: float-blossom 28s ease-in-out infinite 2s; }
-        .blossom-88 { top: 41%; right: 12%; animation: float-blossom 25s ease-in-out infinite 15s; }
-        .blossom-89 { top: 81%; left: 38%; animation: float-blossom 23s ease-in-out infinite 9s; }
-        .blossom-90 { top: 20%; right: 62%; animation: float-blossom 26s ease-in-out infinite 5s; }
-        .blossom-91 { top: 59%; left: 52%; animation: float-blossom 24s ease-in-out infinite 11s; }
-        .blossom-92 { top: 97%; right: 48%; animation: float-blossom 27s ease-in-out infinite 3s; }
-        .blossom-93 { top: 34%; left: 28%; animation: float-blossom 22s ease-in-out infinite 13s; }
-        .blossom-94 { top: 74%; right: 8%; animation: float-blossom 28s ease-in-out infinite 7s; }
-        .blossom-95 { top: 12%; left: 78%; animation: float-blossom 25s ease-in-out infinite 14s; }
-        .blossom-96 { top: 50%; right: 28%; animation: float-blossom 23s ease-in-out infinite 6s; }
-        .blossom-97 { top: 85%; left: 62%; animation: float-blossom 26s ease-in-out infinite 10s; }
-        .blossom-98 { top: 30%; right: 75%; animation: float-blossom 24s ease-in-out infinite 4s; }
-        .blossom-99 { top: 70%; left: 42%; animation: float-blossom 27s ease-in-out infinite 12s; }
-        .blossom-100 { top: 8%; right: 88%; animation: float-blossom 22s ease-in-out infinite 8s; }
-
+        /* Drift distance is per-petal via --dx/--dy (set in JS) so the 500 petals
+           don't move in lockstep. Defaults keep it sane if the vars are missing. */
         @keyframes float-blossom {
             0% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-                opacity: 0.3;
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.25;
             }
             25% {
-                transform: translateY(-15px) translateX(10px) rotate(90deg);
-                opacity: 0.4;
+                transform: translate(calc(var(--dx, 40px) * 0.6), calc(var(--dy, 80px) * 0.35)) rotate(120deg);
+                opacity: 0.45;
             }
             50% {
-                transform: translateY(-30px) translateX(-5px) rotate(180deg);
+                transform: translate(var(--dx, 40px), var(--dy, 80px)) rotate(220deg);
                 opacity: 0.3;
             }
             75% {
-                transform: translateY(-15px) translateX(-12px) rotate(270deg);
-                opacity: 0.35;
+                transform: translate(calc(var(--dx, 40px) * -0.5), calc(var(--dy, 80px) * 0.7)) rotate(310deg);
+                opacity: 0.4;
             }
             100% {
-                transform: translateY(0) translateX(0) rotate(360deg);
-                opacity: 0.3;
+                transform: translate(0, 0) rotate(360deg);
+                opacity: 0.25;
             }
         }
 
@@ -758,107 +532,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Cherry blossom decorations -->
-        <div class="blossom blossom-1"></div>
-        <div class="blossom blossom-2"></div>
-        <div class="blossom blossom-3"></div>
-        <div class="blossom blossom-4"></div>
-        <div class="blossom blossom-5"></div>
-        <div class="blossom blossom-6"></div>
-        <div class="blossom blossom-7"></div>
-        <div class="blossom blossom-8"></div>
-        <div class="blossom blossom-9"></div>
-        <div class="blossom blossom-10"></div>
-        <div class="blossom blossom-11"></div>
-        <div class="blossom blossom-12"></div>
-        <div class="blossom blossom-13"></div>
-        <div class="blossom blossom-14"></div>
-        <div class="blossom blossom-15"></div>
-        <div class="blossom blossom-16"></div>
-        <div class="blossom blossom-17"></div>
-        <div class="blossom blossom-18"></div>
-        <div class="blossom blossom-19"></div>
-        <div class="blossom blossom-20"></div>
-        <div class="blossom blossom-21"></div>
-        <div class="blossom blossom-22"></div>
-        <div class="blossom blossom-23"></div>
-        <div class="blossom blossom-24"></div>
-        <div class="blossom blossom-25"></div>
-        <div class="blossom blossom-26"></div>
-        <div class="blossom blossom-27"></div>
-        <div class="blossom blossom-28"></div>
-        <div class="blossom blossom-29"></div>
-        <div class="blossom blossom-30"></div>
-        <div class="blossom blossom-31"></div>
-        <div class="blossom blossom-32"></div>
-        <div class="blossom blossom-33"></div>
-        <div class="blossom blossom-34"></div>
-        <div class="blossom blossom-35"></div>
-        <div class="blossom blossom-36"></div>
-        <div class="blossom blossom-37"></div>
-        <div class="blossom blossom-38"></div>
-        <div class="blossom blossom-39"></div>
-        <div class="blossom blossom-40"></div>
-        <div class="blossom blossom-41"></div>
-        <div class="blossom blossom-42"></div>
-        <div class="blossom blossom-43"></div>
-        <div class="blossom blossom-44"></div>
-        <div class="blossom blossom-45"></div>
-        <div class="blossom blossom-46"></div>
-        <div class="blossom blossom-47"></div>
-        <div class="blossom blossom-48"></div>
-        <div class="blossom blossom-49"></div>
-        <div class="blossom blossom-50"></div>
-        <div class="blossom blossom-51"></div>
-        <div class="blossom blossom-52"></div>
-        <div class="blossom blossom-53"></div>
-        <div class="blossom blossom-54"></div>
-        <div class="blossom blossom-55"></div>
-        <div class="blossom blossom-56"></div>
-        <div class="blossom blossom-57"></div>
-        <div class="blossom blossom-58"></div>
-        <div class="blossom blossom-59"></div>
-        <div class="blossom blossom-60"></div>
-        <div class="blossom blossom-61"></div>
-        <div class="blossom blossom-62"></div>
-        <div class="blossom blossom-63"></div>
-        <div class="blossom blossom-64"></div>
-        <div class="blossom blossom-65"></div>
-        <div class="blossom blossom-66"></div>
-        <div class="blossom blossom-67"></div>
-        <div class="blossom blossom-68"></div>
-        <div class="blossom blossom-69"></div>
-        <div class="blossom blossom-70"></div>
-        <div class="blossom blossom-71"></div>
-        <div class="blossom blossom-72"></div>
-        <div class="blossom blossom-73"></div>
-        <div class="blossom blossom-74"></div>
-        <div class="blossom blossom-75"></div>
-        <div class="blossom blossom-76"></div>
-        <div class="blossom blossom-77"></div>
-        <div class="blossom blossom-78"></div>
-        <div class="blossom blossom-79"></div>
-        <div class="blossom blossom-80"></div>
-        <div class="blossom blossom-81"></div>
-        <div class="blossom blossom-82"></div>
-        <div class="blossom blossom-83"></div>
-        <div class="blossom blossom-84"></div>
-        <div class="blossom blossom-85"></div>
-        <div class="blossom blossom-86"></div>
-        <div class="blossom blossom-87"></div>
-        <div class="blossom blossom-88"></div>
-        <div class="blossom blossom-89"></div>
-        <div class="blossom blossom-90"></div>
-        <div class="blossom blossom-91"></div>
-        <div class="blossom blossom-92"></div>
-        <div class="blossom blossom-93"></div>
-        <div class="blossom blossom-94"></div>
-        <div class="blossom blossom-95"></div>
-        <div class="blossom blossom-96"></div>
-        <div class="blossom blossom-97"></div>
-        <div class="blossom blossom-98"></div>
-        <div class="blossom blossom-99"></div>
-        <div class="blossom blossom-100"></div>
 
         <!-- Hero -->
         <section class="hero">
@@ -984,6 +657,34 @@
         document.querySelectorAll('.fade-up').forEach(el => {
             observer.observe(el);
         });
+
+        // Floating cherry blossoms — generated rather than hand-written. Position,
+        // drift duration and start delay are randomized so the petals look organic.
+        // Bump COUNT to add more (each is a transform-only animated div).
+        (function () {
+            const COUNT = 500;
+            const container = document.querySelector('.container');
+            const frag = document.createDocumentFragment();
+            for (let i = 0; i < COUNT; i++) {
+                const b = document.createElement('div');
+                // One of three petal shapes at random (b1 is the default shape).
+                const shape = ['b1', 'b2', 'b3'][Math.floor(Math.random() * 3)];
+                b.className = 'blossom ' + shape;
+                b.style.top = (Math.random() * 100).toFixed(2) + '%';
+                b.style.left = (Math.random() * 100).toFixed(2) + '%';
+                // Large, randomized per-petal drift so the motion reads clearly.
+                const dx = (Math.random() * 240 - 120).toFixed(0);  // -120…120px
+                const dy = (Math.random() * 220 - 60).toFixed(0);   //  -60…160px (bias downward)
+                b.style.setProperty('--dx', dx + 'px');
+                b.style.setProperty('--dy', dy + 'px');
+                const duration = 12 + Math.random() * 12;  // 12–24s
+                const delay = Math.random() * 14;           // 0–14s
+                b.style.animation = `float-blossom ${duration.toFixed(1)}s ease-in-out infinite ${delay.toFixed(1)}s`;
+                frag.appendChild(b);
+            }
+            // Prepend so the petals paint behind the page content.
+            container.insertBefore(frag, container.firstChild);
+        })();
     </script>
 
     <script type="module">

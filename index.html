@@ -644,6 +644,116 @@
                 opacity: 0.3;
             }
         }
+
+        /* Live demo */
+        .demo-panel {
+            background: white;
+            border-radius: 2px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border-top: 3px solid var(--matcha);
+            padding: 2.5rem 2rem;
+            margin-top: 2rem;
+        }
+
+        .demo-status {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .demo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--muted-clay);
+            flex-shrink: 0;
+            transition: background 0.3s ease;
+        }
+
+        .demo-dot.connecting { background: var(--muted-clay); animation: pulse 1.2s ease-in-out infinite; }
+        .demo-dot.connected { background: var(--matcha); }
+        .demo-dot.error { background: var(--soft-red); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .demo-examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-example {
+            font-family: 'Crimson Pro', serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+            background: var(--paper);
+            border: 1px solid var(--sand);
+            border-radius: 2px;
+            padding: 0.6rem 1.1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .demo-example:hover:not(:disabled) {
+            border-color: var(--matcha);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .demo-example:disabled { opacity: 0.5; cursor: progress; }
+        .demo-example.active { border-color: var(--matcha); background: var(--sand); }
+
+        .demo-call {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--charcoal);
+            background: var(--sand);
+            border-left: 3px solid var(--muted-clay);
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 2px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .demo-result {
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: var(--ink);
+            background: #2D2D2D;
+            color: #E5DCC5;
+            padding: 1.2rem;
+            border-radius: 2px;
+            /* Fixed height (not max-height) so loading a result never reflows the
+               page — otherwise the percent-positioned blossoms jump around. */
+            height: 380px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin: 0;
+        }
+
+        .demo-hint { font-size: 0.85rem; color: var(--charcoal); font-style: italic; }
+
+        .demo-explain {
+            font-size: 0.9rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            padding-left: 0.2rem;
+            border-left: 3px solid transparent;
+            /* Reserve two lines so 1- vs 2-line explanations don't shift layout. */
+            min-height: 3.4rem;
+        }
+        .demo-explain strong { color: var(--muted-clay); font-weight: 600; }
     </style>
 </head>
 <body>
@@ -788,6 +898,26 @@
             </div>
         </section>
 
+        <!-- Try It Live -->
+        <section class="fade-up">
+            <h2 class="section-title">Try It Live</h2>
+            <p class="section-subtitle">Call the real MCP tools right here in your browser</p>
+
+            <div class="demo-panel">
+                <div class="demo-status">
+                    <span class="demo-dot" id="demo-dot"></span>
+                    <span id="demo-status-text">Pick an example below to connect to https://api.sumo-mcp.com/mcp</span>
+                </div>
+
+                <div class="demo-examples" id="demo-examples"></div>
+
+                <div class="demo-call" id="demo-call">→ click an example above to make a live tool call</div>
+                <p class="demo-explain" id="demo-explain">The inputs passed to the tool will be explained here.</p>
+                <pre class="demo-result" id="demo-result">Results will appear here.</pre>
+                <p class="demo-hint" id="demo-hint">Each click opens a real Model Context Protocol session and invokes a tool &mdash; exactly what an AI assistant does behind the scenes.</p>
+            </div>
+        </section>
+
         <!-- Features -->
         <section class="features fade-up">
             <h2 class="section-title">Made with Care</h2>
@@ -853,6 +983,164 @@
 
         document.querySelectorAll('.fade-up').forEach(el => {
             observer.observe(el);
+        });
+    </script>
+
+    <script type="module">
+        // The MCP SDK is imported lazily on first click so a slow or failed CDN
+        // load can never prevent the example buttons from rendering.
+        // zod is pinned via ?deps: esm.sh otherwise resolves an incompatible zod
+        // and the SDK throws "t.custom is not a function" on connect.
+        const SDK = "https://esm.sh/@modelcontextprotocol/sdk@1.29.0";
+        const DEPS = "?deps=zod@3.25.76";
+        const SDK_INDEX = SDK + "/client/index.js" + DEPS;
+        const SDK_HTTP = SDK + "/client/streamableHttp.js" + DEPS;
+
+        let sdkPromise = null;
+        function loadSDK() {
+            if (!sdkPromise) {
+                sdkPromise = Promise.all([import(SDK_INDEX), import(SDK_HTTP)])
+                    .then(([index, http]) => ({
+                        Client: index.Client,
+                        StreamableHTTPClientTransport: http.StreamableHTTPClientTransport,
+                    }))
+                    .catch((err) => { sdkPromise = null; throw err; });
+            }
+            return sdkPromise;
+        }
+
+        // In production the API lives on a separate origin (api.sumo-mcp.com), so
+        // we call it directly and rely on its CORS allowlist. For local testing,
+        // run devproxy.go and the page talks to a same-origin /mcp proxy instead.
+        const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        const ENDPOINT = isLocal ? "/mcp" : "https://api.sumo-mcp.com/mcp";
+
+        // Honbasho (grand tournaments) are held in the odd months — January,
+        // March, May, July, September, November — and conclude around the 24th.
+        // Compute the most recently concluded one from today's date so the first
+        // demo always reflects the freshest results, never a hardcoded basho.
+        function latestBashoId(now) {
+            const months = [1, 3, 5, 7, 9, 11];
+            let best = null;
+            for (const y of [now.getFullYear() - 1, now.getFullYear()]) {
+                for (const m of months) {
+                    if (new Date(y, m - 1, 26) <= now) best = "" + y + String(m).padStart(2, "0");
+                }
+            }
+            return best;
+        }
+        const LATEST_BASHO = latestBashoId(new Date());
+
+        // Curated example calls covering all 13 tools, each verified against the
+        // live server. The first button shows the latest tournament's results
+        // (live, changes every basho). The demo wrestler is Hakuho (id 3081),
+        // the greatest yokozuna; his rival Asashoryu is id 3846.
+        const EXAMPLES = [
+            { label: "Latest tournament", tool: "get_basho", args: { bashoId: LATEST_BASHO },
+              explain: "bashoId — which tournament to fetch, as YYYYMM. Computed from today's date, so it's always the most recently concluded basho." },
+            { label: "Search a wrestler", tool: "search_rikishi", args: { shikona: "Hakuho", includeRetired: true },
+              explain: "shikona — the ring name to search for. includeRetired — also return retired wrestlers (Hakuhō retired in 2021)." },
+            { label: "Wrestler profile", tool: "get_rikishi", args: { rikishiId: 3081 },
+              explain: "rikishiId — the wrestler's unique id. 3081 is Hakuhō." },
+            { label: "Career stats", tool: "get_rikishi_stats", args: { rikishiId: 3081 },
+              explain: "rikishiId — the wrestler (3081 = Hakuhō). Returns career totals: wins, losses, championships." },
+            { label: "Recent matches", tool: "list_rikishi_matches", args: { rikishiId: 3081, limit: 5 },
+              explain: "rikishiId — the wrestler (Hakuhō). limit — only the 5 most recent bouts." },
+            { label: "Head-to-head", tool: "list_rikishi_matches_against_opponent", args: { rikishiId: 3081, opponentId: 3846, limit: 5 },
+              explain: "rikishiId — the wrestler (3081 = Hakuhō). opponentId — the rival (3846 = Asashōryū). limit — their 5 most recent meetings." },
+            { label: "Rank history", tool: "list_rank_changes", args: { rikishiId: 3081, limit: 10 },
+              explain: "rikishiId — the wrestler (Hakuhō). limit — the 10 most recent rank changes." },
+            { label: "Measurement history", tool: "list_measurement_changes", args: { rikishiId: 3081, limit: 10 },
+              explain: "rikishiId — the wrestler (Hakuhō). limit — the 10 most recent height/weight records." },
+            { label: "Ring-name history", tool: "list_shikona_changes", args: { rikishiId: 3081, limit: 10 },
+              explain: "rikishiId — the wrestler (Hakuhō). limit — up to 10 ring-name changes (he kept one his whole career)." },
+            { label: "Latest banzuke", tool: "get_banzuke", args: { bashoId: LATEST_BASHO, division: "Makuuchi" },
+              explain: "bashoId — the latest tournament (computed). division — Makuuchi, the top division. Returns the full ranking sheet." },
+            { label: "Final-day bouts", tool: "get_basho_with_torikumi", args: { bashoId: LATEST_BASHO, division: "Makuuchi", day: 15 },
+              explain: "bashoId — the latest tournament. division — Makuuchi. day — 15, the final day (senshuraku)." },
+            { label: "Top techniques", tool: "list_kimarite", args: { sortField: "count", sortOrder: "desc", limit: 10 },
+              explain: "sortField — rank by count (how often used). sortOrder — desc (most common first). limit — top 10." },
+            { label: "Wins by technique", tool: "list_kimarite_matches", args: { kimarite: "uwatenage", sortOrder: "desc", limit: 5 },
+              explain: "kimarite — the winning technique (uwatenage, an over-arm throw). sortOrder — desc (newest first). limit — 5." },
+        ];
+
+        const dot = document.getElementById("demo-dot");
+        const statusText = document.getElementById("demo-status-text");
+        const callEl = document.getElementById("demo-call");
+        const explainEl = document.getElementById("demo-explain");
+        const resultEl = document.getElementById("demo-result");
+        const examplesEl = document.getElementById("demo-examples");
+
+        // Render an example's input explanation, bolding the parameter names.
+        // The text is author-controlled, but escape first to be safe with innerHTML.
+        function renderExplain(text) {
+            if (!text) return;
+            const esc = text.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+            explainEl.innerHTML = esc.replace(/(^|\. )([A-Za-z]+) — /g, "$1<strong>$2</strong> — ");
+        }
+
+        function setStatus(state, text) {
+            dot.className = "demo-dot" + (state ? " " + state : "");
+            statusText.textContent = text;
+        }
+
+        let clientPromise = null;
+        function connect() {
+            if (!clientPromise) {
+                clientPromise = (async () => {
+                    setStatus("connecting", "Connecting to " + ENDPOINT + " …");
+                    const { Client, StreamableHTTPClientTransport } = await loadSDK();
+                    const client = new Client({ name: "sumo-mcp-website", version: "1.0.0" });
+                    const transport = new StreamableHTTPClientTransport(new URL(ENDPOINT, location.href));
+                    await client.connect(transport);
+                    const { tools } = await client.listTools();
+                    setStatus("connected", "Connected · " + tools.length + " tools available");
+                    return client;
+                })().catch((err) => {
+                    clientPromise = null; // allow retry
+                    throw err;
+                });
+            }
+            return clientPromise;
+        }
+
+        function pickContent(res) {
+            if (res.structuredContent !== undefined) return res.structuredContent;
+            if (Array.isArray(res.content)) {
+                const text = res.content.filter(c => c.type === "text").map(c => c.text).join("\n");
+                try { return JSON.parse(text); } catch { return text; }
+            }
+            return res;
+        }
+
+        async function run(example, button) {
+            const buttons = examplesEl.querySelectorAll(".demo-example");
+            buttons.forEach(b => { b.disabled = true; b.classList.toggle("active", b === button); });
+
+            callEl.textContent = "→ " + example.tool + "(" + JSON.stringify(example.args) + ")";
+            renderExplain(example.explain);
+            resultEl.textContent = "Calling " + example.tool + " …";
+
+            try {
+                const client = await connect();
+                const res = await client.callTool({ name: example.tool, arguments: example.args });
+                const content = pickContent(res);
+                const pretty = typeof content === "string" ? content : JSON.stringify(content, null, 2);
+                resultEl.textContent = res.isError ? "⚠ " + pretty : pretty;
+            } catch (err) {
+                setStatus("error", "Connection failed");
+                resultEl.textContent = "⚠ " + (err && err.message ? err.message : String(err));
+            } finally {
+                buttons.forEach(b => { b.disabled = false; });
+            }
+        }
+
+        EXAMPLES.forEach((ex) => {
+            const btn = document.createElement("button");
+            btn.className = "demo-example";
+            btn.textContent = ex.label;
+            btn.addEventListener("click", () => run(ex, btn));
+            examplesEl.appendChild(btn);
         });
     </script>
 </body>

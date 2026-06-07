@@ -31,6 +31,17 @@
             background: var(--paper);
             color: var(--ink);
             line-height: 1.8;
+            /* Petals are injected after load; don't let that shift the scroll. */
+            overflow-anchor: none;
+        }
+
+        /* Full-page overlay that holds the petals. overflow:hidden + absolute
+           means the randomly-placed petals can never enlarge the scroll area. */
+        .petals {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
         }
 
         /* Japanese paper texture */
@@ -682,8 +693,12 @@
                 b.style.animation = `float-blossom ${duration.toFixed(1)}s ease-in-out infinite ${delay.toFixed(1)}s`;
                 frag.appendChild(b);
             }
-            // Prepend so the petals paint behind the page content.
-            container.insertBefore(frag, container.firstChild);
+            // Hold the petals in a clipped overlay so their random positions can't
+            // change the page's scroll height; prepend so they paint behind content.
+            const overlay = document.createElement('div');
+            overlay.className = 'petals';
+            overlay.appendChild(frag);
+            container.insertBefore(overlay, container.firstChild);
         })();
     </script>
 

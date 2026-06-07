@@ -689,7 +689,9 @@
                 b.style.setProperty('--dx', dx + 'px');
                 b.style.setProperty('--dy', dy + 'px');
                 const duration = 12 + Math.random() * 12;  // 12–24s
-                const delay = Math.random() * 14;           // 0–14s
+                // Negative delay = start partway through the cycle, so every petal
+                // is already mid-drift on load (and still desynchronized).
+                const delay = -Math.random() * duration;
                 b.style.animation = `float-blossom ${duration.toFixed(1)}s ease-in-out infinite ${delay.toFixed(1)}s`;
                 frag.appendChild(b);
             }
